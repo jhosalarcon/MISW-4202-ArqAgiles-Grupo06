@@ -7,7 +7,7 @@ class ActividadResource(Resource):
         return actividad_schema.dump(actividad)
 
 
-api.add_resource(ActividadResource, '/api-queries/actividades/<int:persona_id>')
+api.add_resource(ActividadResource, '/api-queries/actividades/<int:actividad_id>')
 
 
 if __name__ == '__main__':
