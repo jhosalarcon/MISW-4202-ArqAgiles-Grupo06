@@ -7,12 +7,21 @@ import pika
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'notificaciones.db') ## 'sqlite:////mnt/sesiones.db' 
-app_context = app.app_context() 
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'notificaciones.db') ## 'sqlite:////mnt/sesiones.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////mnt/notificaciones.db' ## 'sqlite:////mnt/sesiones.db'
+app_context = app.app_context()
 app_context.push()
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 api = Api(app)
+
+amqp_url = os.environ['AMQP_URL']
+url_params = pika.URLParameters(amqp_url)
+
+connection = pika.BlockingConnection(url_params)
+channel = connection.channel()
+channel.queue_declare(queue='notification_queue')
+# channel.queue_declare(queue='session_queue')
 
 class Notificacion(db.Model):
         id = db.Column(db.Integer, primary_key=True)
@@ -23,13 +32,6 @@ class NotificacionSchema(ma.SQLAlchemyAutoSchema):
             fields = ('id', 'sesion_id')
 
 notificacion_schema = NotificacionSchema()
-
-amqp_url = os.environ['AMQP_URL']
-url_params = pika.URLParameters(amqp_url)
-
-connection = pika.BlockingConnection(url_params)
-channel = connection.channel()
-channel.queue_declare(queue='notification_queue')
 
 
     

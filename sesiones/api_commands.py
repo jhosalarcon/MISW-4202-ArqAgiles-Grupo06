@@ -1,22 +1,40 @@
+import threading
+import time
+
 from flask import request
+import requests
 from flask_restful import Resource
 
-from base import Persona, Actividad, Sesion, db, sesion_schema, api, app, channel
-from notification_sender import enviar_notificacion
+from base import Sesion, db, sesion_schema, api, app, channel, Actividad #Persona
 
 class SesionListResource(Resource):
     """Esto clase hace referencia a la interfaz de sesion para iniciar una sesion desde el api gateway"""
 
     def post(self):
-        #user = Persona.query.get(request.json['persona_id'])
-        # actividad = Actividad.query.get(request.json['actividad_id'])
-        ## if user is None or actividad is None:
-        ##    return {'message': 'User or activity not found'}, 400
+        persona_response = requests.get(f"http://personas-queries:5000/api-queries/personas/{request.json['persona_id']}")
+        actividad_response = requests.get(f"http://personas-queries:5000/api-queries/actividades/{request.json['actividad_id']}")
+        if persona_response.status_code != 404 or actividad_response.status_code != 404:
+            return {'message': 'User or activity not found'}, 400
         new_sesion = Sesion(nombre=request.json['nombre'], fecha=request.json['fecha'],
                             persona_id=request.json['persona_id'], actividad_id=request.json['actividad_id'])
 
         db.session.add(new_sesion)
         db.session.commit()
+
+        actividad_duration = actividad_response.json()['duration']
+
+        def publish_message_every_2_seconds():
+            start = 0
+            while actividad_duration -start > 0:
+                channel.basic_publish(exchange='',
+                                      routing_key='notification_queue',
+                                      body=str(new_sesion.id))
+                print("Message published.")
+                time.sleep(2)
+                start += 2
+
+        threading.Thread(target=publish_message_every_2_seconds).start()
+
         channel.basic_publish(exchange='',
                       routing_key='notification_queue',
                       body=str(new_sesion.id))

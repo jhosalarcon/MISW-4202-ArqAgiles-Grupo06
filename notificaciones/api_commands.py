@@ -14,10 +14,10 @@ class NotificacionResource(Resource):
         db.session.add(new_notification)
         db.session.commit()
         channel.basic_publish(exchange='',
-                      routing_key='notification_queue',
-                      body=str(new_sesion.id))
+                      routing_key='session_queue',
+                      body=str(new_notification.id))
         print(" Notificacion enviada desde commandos....!!'")
-        return notificacion_schema.jsonify(new_sesion)
+        return notificacion_schema.dump(new_notification)
 
 api.add_resource(NotificacionResource, '/api-commands/notificaciones')
 

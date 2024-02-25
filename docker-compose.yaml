@@ -29,6 +29,30 @@ services:
       AMQP_URL: "amqp://rabbitmq?connection_attempts=10&retry_delay=10"
     depends_on:
       - rabbitmq
+  personas-commands:
+    volumes:
+        - ./personas/:/mnt/
+    build: ./personas
+    working_dir: /backend/
+    command: sh run_commands.sh
+  personas-queries:
+    volumes:
+        - ./personas/:/mnt/
+    build: ./personas
+    working_dir: /backend/
+    command: sh run_queries.sh
+  actividades-commands:
+    volumes:
+        - ./actividades/:/mnt/
+    build: ./actividades
+    working_dir: /backend/
+    command: sh run_commands.sh
+  actividades-queries:
+    volumes:
+        - ./actividades/:/mnt/
+    build: ./actividades
+    working_dir: /backend/
+    command: sh run_queries.sh
   nginx:
     image: nginx:latest
     ports:
@@ -38,6 +62,10 @@ services:
     depends_on:
       - sesiones-commands
       - notificaciones-commands
+      - personas-commands
+      - actividades-commands
+      - personas-queries
+      - actividades-queries
 
 networks:
   rabbitmq_go_net:
