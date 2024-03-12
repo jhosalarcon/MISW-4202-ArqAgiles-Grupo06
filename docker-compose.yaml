@@ -16,7 +16,7 @@ services:
     working_dir: /backend/
     command: sh run_commands.sh
     environment:
-      AMQP_URL: "amqp://rabbitmq?connection_attempts=10&retry_delay=10"
+      AMQP_URL: "amqp://rabbitmq?connection_attempts=10&retry_delay=10&heartbeat=30"
     depends_on:
       - rabbitmq
   notificaciones-commands:
@@ -31,25 +31,25 @@ services:
       - rabbitmq
   personas-commands:
     volumes:
-        - ./personas/:/mnt/
+      - ./personas/:/mnt/
     build: ./personas
     working_dir: /backend/
     command: sh run_commands.sh
   personas-queries:
     volumes:
-        - ./personas/:/mnt/
+      - ./personas/:/mnt/
     build: ./personas
     working_dir: /backend/
     command: sh run_queries.sh
   actividades-commands:
     volumes:
-        - ./actividades/:/mnt/
+      - ./actividades/:/mnt/
     build: ./actividades
     working_dir: /backend/
     command: sh run_commands.sh
   actividades-queries:
     volumes:
-        - ./actividades/:/mnt/
+      - ./actividades/:/mnt/
     build: ./actividades
     working_dir: /backend/
     command: sh run_queries.sh
