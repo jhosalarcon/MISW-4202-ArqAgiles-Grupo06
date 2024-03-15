@@ -9,6 +9,18 @@ services:
       - 15672:15672
     volumes:
       - ./data:/data
+  acl-queries:
+    volumes:
+      - ./acl/:/mnt/
+    build: ./acl
+    working_dir: /backend/
+    command: sh run.sh
+  jwt-queries:
+    volumes:
+      - ./jwt/:/mnt/
+    build: ./jwt
+    working_dir: /backend/
+    command: sh run.sh
   sesiones-commands:
     volumes:
       - ./sesiones/:/mnt/
@@ -16,7 +28,7 @@ services:
     working_dir: /backend/
     command: sh run_commands.sh
     environment:
-      AMQP_URL: "amqp://rabbitmq?connection_attempts=10&retry_delay=10&heartbeat=30"
+      AMQP_URL: "amqp://rabbitmq?connection_attempts=10&retry_delay=10&heartbeat=600"
     depends_on:
       - rabbitmq
   notificaciones-commands:
@@ -66,6 +78,7 @@ services:
       - actividades-commands
       - personas-queries
       - actividades-queries
+      - jwt-queries
 
 networks:
   rabbitmq_go_net:

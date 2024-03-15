@@ -4,6 +4,8 @@ from flask_marshmallow import Marshmallow
 from flask_restful import Api
 import pika
 import os
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended import jwt_required
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -13,6 +15,10 @@ app_context = app.app_context()
 app_context.push()
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+app.config["JWT_SECRET_KEY"] = "secret-jwt"  # Change this!
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
+
+jwt = JWTManager(app)
 api = Api(app)
 
 # read rabbitmq connection url from environment variable
@@ -21,8 +27,8 @@ url_params = pika.URLParameters(amqp_url)
 
 connection = pika.BlockingConnection(url_params)
 channel = connection.channel()
-channel.queue_declare(queue='notification_queue')
-channel.queue_declare(queue='session_queue')
+channel.queue_declare(queue='notification_queue', auto_delete=False)
+channel.queue_declare(queue='session_queue', auto_delete=False)
 
 
 class Sesion(db.Model):

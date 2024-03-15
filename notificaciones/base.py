@@ -17,7 +17,6 @@ api = Api(app)
 
 amqp_url = os.environ['AMQP_URL']
 url_params = pika.URLParameters(amqp_url)
-
 connection = pika.BlockingConnection(url_params)
 channel = connection.channel()
 channel.queue_declare(queue='notification_queue')

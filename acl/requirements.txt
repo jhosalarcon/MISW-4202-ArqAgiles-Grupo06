@@ -4,8 +4,5 @@ Flask-RESTful
 Flask-SQLAlchemy
 SQLAlchemy
 marshmallow-sqlalchemy
-requests
-pika
-docker
 flask-jwt-extended
 pyopenssl
