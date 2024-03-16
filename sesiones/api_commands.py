@@ -49,17 +49,17 @@ class SesionListResource(Resource):
         actividad_duration = int(actividad_response.json()['duracion'])
 
         # actividad_duration = 10
-        def publish_message_every_2_seconds(args, channel):
-            start = 0
-            while actividad_duration - start > 0:
-                channel.basic_publish(exchange='',
-                                      routing_key='notification_queue',
-                                      body=str(args))
-                print("Message published.", flush=True)
-                time.sleep(2)
-                start += 2
+        # def publish_message_every_2_seconds(args, channel):
+        #    start = 0
+        #    while actividad_duration - start > 0:
+        #        channel.basic_publish(exchange='',
+        #                              routing_key='notification_queue',
+        #                              body=str(args))
+        #       print("Message published.", flush=True)
+        #        time.sleep(2)
+        #        start += 2
 
-        threading.Thread(target=publish_message_every_2_seconds, args=(new_sesion.id, channel)).start()
+        #threading.Thread(target=publish_message_every_2_seconds, args=(new_sesion.id, channel)).start()
 
         return sesion_schema.jsonify(new_sesion)
 
