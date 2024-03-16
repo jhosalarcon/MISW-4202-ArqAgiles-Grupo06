@@ -41,4 +41,4 @@ api.add_resource(ACLResource, '/api-queries/acl/<string:service_name>/<string:qu
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0') ##, ssl_context='adhoc')
+    app.run(debug=True, host='0.0.0.0', ssl_context='adhoc')

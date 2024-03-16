@@ -19,4 +19,4 @@ class AuthResource(Resource):
 api.add_resource(AuthResource, '/api-queries/jwt/<int:persona_id>')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', ssl_context='adhoc')

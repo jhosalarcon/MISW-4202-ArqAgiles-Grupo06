@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_restful import Api
+from flask_jwt_extended import JWTManager
 import pika
 import os
 
@@ -12,6 +13,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////mnt/actividades.db' ## 'sqli
 app_context = app.app_context()
 app_context.push()
 db = SQLAlchemy(app)
+app.config["JWT_SECRET_KEY"] = "secret-jwt"  # Change this!
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = True
+
+jwt = JWTManager(app)
 ma = Marshmallow(app)
 api = Api(app)
 

@@ -6,3 +6,4 @@ SQLAlchemy
 marshmallow-sqlalchemy
 requests
 pika
+pyopenssl

@@ -6,3 +6,5 @@ SQLAlchemy
 marshmallow-sqlalchemy
 requests
 pika
+pyopenssl
+flask-jwt-extended
